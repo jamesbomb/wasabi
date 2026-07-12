@@ -1,0 +1,61 @@
+<Window x:Class="Wasabi.App.CalibrationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Calibra latenza uscite"
+        Width="650" Height="500"
+        MinWidth="600" MinHeight="440"
+        WindowStartupLocation="CenterOwner">
+    <Border Background="{StaticResource BgPanel}" Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="Calibrazione acustica" FontSize="18" FontWeight="SemiBold"/>
+                <TextBlock Text="Scegli il microfono che può sentire sia cuffie sia altoparlanti. WASABI riprodurrà tre brevi toni su ogni uscita."
+                           Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Margin="0,18,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="MicrophoneCombo" DisplayMemberPath="Name" MinWidth="380"/>
+                <Button x:Name="RunButton" Grid.Column="1" Content="Avvia test" Style="{StaticResource AccentButton}"
+                        Click="Run_Click" Margin="12,0,0,0"/>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="StatusText" Foreground="{StaticResource TextMuted}" Text="Pronto." Margin="0,0,0,8"/>
+                <DataGrid x:Name="ResultGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" HeadersVisibility="Column"
+                          Background="{StaticResource BgDark}" Foreground="{StaticResource TextPrimary}"
+                          BorderBrush="#3A4150" BorderThickness="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Uscita" Binding="{Binding OutputName}" Width="*"/>
+                        <DataGridTextColumn Header="Latenza rilevata" Binding="{Binding MeasuredText}" Width="120"/>
+                        <DataGridTextColumn Header="Ritardo proposto" Binding="{Binding SuggestedText}" Width="120"/>
+                        <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="170"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button x:Name="CancelTestButton" Content="Interrompi test" Click="CancelTest_Click"
+                        IsEnabled="False" Margin="0,0,8,0"/>
+                <Button Content="Chiudi" IsCancel="True" Margin="0,0,8,0"/>
+                <Button x:Name="ApplyButton" Content="Applica ritardi" Style="{StaticResource AccentButton}"
+                        Click="Apply_Click" IsEnabled="False"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

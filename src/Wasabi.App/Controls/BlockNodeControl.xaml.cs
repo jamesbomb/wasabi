@@ -38,7 +38,8 @@ public partial class BlockNodeControl : UserControl
         SubtitleText.Text = Node.Type switch
         {
             NodeType.AppSource => Node.ProcessName ?? "Seleziona applicazione…",
-            NodeType.DeviceLoopback or NodeType.DeviceOutput => Node.DeviceName ?? "Seleziona dispositivo…",
+            NodeType.DeviceLoopback => Node.DeviceName ?? "Seleziona dispositivo…",
+            NodeType.DeviceOutput => FormatOutputSubtitle(),
             NodeType.Mixer => $"{Node.InputCount} ingressi",
             NodeType.Splitter => $"{Node.OutputCount} uscite",
             NodeType.VirtualBus => "Bus interno di routing",
@@ -47,6 +48,12 @@ public partial class BlockNodeControl : UserControl
 
         PortList.ItemsSource = null;
         PortList.ItemsSource = Node.Ports;
+    }
+
+    private string FormatOutputSubtitle()
+    {
+        var device = Node.DeviceName ?? "Seleziona dispositivo…";
+        return Node.OutputDelayMs > 0 ? $"{device} · +{Node.OutputDelayMs} ms" : device;
     }
 
     public Point GetPortCenter(string portId, UIElement relativeTo)

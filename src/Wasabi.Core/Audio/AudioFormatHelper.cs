@@ -37,6 +37,26 @@ public static class AudioFormatHelper
         return [];
     }
 
+    public static float[] BytesToMono(ReadOnlySpan<byte> data, WaveFormat format)
+    {
+        var channels = Math.Max(1, format.Channels);
+        var interleaved = BytesToFloat(data, format);
+        if (interleaved.Length == 0 || channels == 1)
+            return interleaved;
+
+        var frames = interleaved.Length / channels;
+        var mono = new float[frames];
+        for (var frame = 0; frame < frames; frame++)
+        {
+            var sum = 0f;
+            for (var channel = 0; channel < channels; channel++)
+                sum += interleaved[frame * channels + channel];
+            mono[frame] = sum / channels;
+        }
+
+        return mono;
+    }
+
     public static byte[] FloatToBytes(ReadOnlySpan<float> samples)
     {
         var bytes = new byte[samples.Length * sizeof(float)];

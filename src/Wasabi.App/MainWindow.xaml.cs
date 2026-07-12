@@ -125,6 +125,43 @@ public partial class MainWindow : Window
         UpdateStatus();
     }
 
+    private void CalibrateLatency_Click(object sender, RoutedEventArgs e)
+    {
+        if (_engine?.IsRunning == true)
+        {
+            MessageBox.Show(
+                "Ferma il routing prima di calibrare. I toni di test devono raggiungere una sola uscita alla volta.",
+                "Routing attivo",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var configuredOutputs = _graph.Nodes.Count(n =>
+            n.Type == NodeType.DeviceOutput && !string.IsNullOrWhiteSpace(n.DeviceId));
+        if (configuredOutputs < 2)
+        {
+            MessageBox.Show(
+                "Configura almeno due blocchi Uscita prima di calibrare.",
+                "Uscite mancanti",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var dialog = new CalibrationWindow(_graph) { Owner = this };
+        if (dialog.ShowDialog() == true)
+        {
+            Editor.Refresh();
+            UpdateStatus();
+            MessageBox.Show(
+                "Ritardi applicati. Avvia il routing per usarli.",
+                "Calibrazione completata",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+    }
+
     private void OpenPatch_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new OpenFileDialog

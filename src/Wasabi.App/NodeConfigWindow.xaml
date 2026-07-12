@@ -21,6 +21,18 @@
                 <ComboBox x:Name="DeviceCombo" DisplayMemberPath="Name" MinWidth="360"/>
             </StackPanel>
 
+            <StackPanel x:Name="OutputDelayPanel" Visibility="Collapsed" Margin="0,0,0,12">
+                <TextBlock Text="Compensazione uscita" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4"/>
+                <StackPanel Orientation="Horizontal">
+                    <Slider x:Name="OutputDelaySlider" Minimum="0" Maximum="500" Width="280"
+                            TickFrequency="5" IsSnapToTickEnabled="True"/>
+                    <TextBlock x:Name="OutputDelayLabel" Margin="10,0,0,0"
+                               VerticalAlignment="Center" Width="60"/>
+                </StackPanel>
+                <TextBlock Text="Ritarda solo questa uscita. Aumenta il valore sull'uscita che senti in anticipo."
+                           Foreground="{StaticResource TextMuted}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
+            </StackPanel>
+
             <StackPanel x:Name="MixerPanel" Visibility="Collapsed" Margin="0,0,0,12">
                 <TextBlock Text="Numero ingressi" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4"/>
                 <Slider x:Name="InputCountSlider" Minimum="2" Maximum="8" IsSnapToTickEnabled="True" TickFrequency="1"/>

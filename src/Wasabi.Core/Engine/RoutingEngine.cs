@@ -13,6 +13,7 @@ public sealed class RoutingEngine : IDisposable
     private readonly Dictionary<string, FloatRingBuffer> _portBuffers = new();
     private readonly Dictionary<string, IWavePlayer> _outputs = new();
     private readonly Dictionary<string, BufferedWaveProvider> _waveProviders = new();
+    private readonly Dictionary<string, FloatRingBuffer> _outputDelayBuffers = new();
     private readonly List<IDisposable> _captures = [];
     private Thread? _mixThread;
     private volatile bool _running;
@@ -21,6 +22,7 @@ public sealed class RoutingEngine : IDisposable
     private const int RingCapacity = AudioFormatHelper.SampleRate; // ~0.5 sec stereo
     private const int MixFrameCount = AudioFormatHelper.SampleRate / 100; // 10 ms
     private const int MixSampleCount = MixFrameCount * AudioFormatHelper.Channels;
+    private const int MaximumOutputDelayMs = 500;
 
     public bool IsRunning => _running;
     public event EventHandler<string>? StatusChanged;
@@ -85,6 +87,7 @@ public sealed class RoutingEngine : IDisposable
         }
         _outputs.Clear();
         _waveProviders.Clear();
+        _outputDelayBuffers.Clear();
         _portBuffers.Clear();
     }
 
@@ -179,7 +182,16 @@ public sealed class RoutingEngine : IDisposable
                 output.Play();
                 _waveProviders[node.Id] = provider;
                 _outputs[node.Id] = output;
-                WasabiLog.Info($"Uscita '{node.Title}' attiva.");
+
+                var delayMs = Math.Clamp(node.OutputDelayMs, 0, MaximumOutputDelayMs);
+                var delaySamples = delayMs * AudioFormatHelper.SampleRate * AudioFormatHelper.Channels / 1000;
+                var delayBuffer = new FloatRingBuffer(
+                    Math.Max(delaySamples + MixSampleCount * 4, MixSampleCount * 4));
+                if (delaySamples > 0)
+                    delayBuffer.Write(new float[delaySamples]);
+                _outputDelayBuffers[node.Id] = delayBuffer;
+
+                WasabiLog.Info($"Uscita '{node.Title}' attiva (compensazione: {delayMs} ms).");
             }
             catch (Exception ex)
             {
@@ -295,11 +307,17 @@ public sealed class RoutingEngine : IDisposable
     {
         if (!_waveProviders.TryGetValue(node.Id, out var provider)) return;
         if (!nodeInputs.TryGetValue(node.Id, out var input)) return;
-        if (node.Muted) return;
+        if (!_outputDelayBuffers.TryGetValue(node.Id, out var delayBuffer)) return;
 
+        if (node.Muted)
+            Array.Clear(input);
         AudioFormatHelper.SoftClip(input);
         AudioFormatHelper.ApplyGain(input, node.Volume);
-        var bytes = AudioFormatHelper.FloatToBytes(input);
+        delayBuffer.Write(input);
+
+        var delayed = new float[input.Length];
+        delayBuffer.Read(delayed);
+        var bytes = AudioFormatHelper.FloatToBytes(delayed);
         provider.AddSamples(bytes, 0, bytes.Length);
     }
 

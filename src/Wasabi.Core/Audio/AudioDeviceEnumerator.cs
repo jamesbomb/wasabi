@@ -15,6 +15,14 @@ public static class AudioDeviceEnumerator
             .ToList();
     }
 
+    public static IReadOnlyList<AudioDeviceInfo> GetCaptureDevices()
+    {
+        using var enumerator = new MMDeviceEnumerator();
+        return enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+            .Select(d => new AudioDeviceInfo(d.ID, d.FriendlyName, DataFlow.Capture))
+            .ToList();
+    }
+
     public static IReadOnlyList<ProcessInfo> GetAudioProcesses()
     {
         var seen = new HashSet<int>();

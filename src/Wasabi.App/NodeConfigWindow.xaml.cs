@@ -19,6 +19,8 @@ public partial class NodeConfigWindow : Window
 
         VolumeSlider.ValueChanged += (_, _) =>
             VolumeLabel.Text = $"{VolumeSlider.Value:P0}";
+        OutputDelaySlider.ValueChanged += (_, _) =>
+            OutputDelayLabel.Text = $"{OutputDelaySlider.Value:0} ms";
 
         switch (node.Type)
         {
@@ -33,8 +35,19 @@ public partial class NodeConfigWindow : Window
                 break;
 
             case NodeType.DeviceLoopback:
+                DevicePanel.Visibility = Visibility.Visible;
+                DeviceCombo.ItemsSource = AudioDeviceEnumerator.GetRenderDevices();
+                if (!string.IsNullOrEmpty(node.DeviceId))
+                {
+                    DeviceCombo.SelectedItem = DeviceCombo.Items.Cast<AudioDeviceInfo>()
+                        .FirstOrDefault(d => d.Id == node.DeviceId);
+                }
+                break;
+
             case NodeType.DeviceOutput:
                 DevicePanel.Visibility = Visibility.Visible;
+                OutputDelayPanel.Visibility = Visibility.Visible;
+                OutputDelaySlider.Value = Math.Clamp(node.OutputDelayMs, 0, 500);
                 DeviceCombo.ItemsSource = AudioDeviceEnumerator.GetRenderDevices();
                 if (!string.IsNullOrEmpty(node.DeviceId))
                 {
@@ -78,6 +91,9 @@ public partial class NodeConfigWindow : Window
 
         if (_node.Type == NodeType.Splitter)
             _node.OutputCount = (int)OutputCountSlider.Value;
+
+        if (_node.Type == NodeType.DeviceOutput)
+            _node.OutputDelayMs = (int)OutputDelaySlider.Value;
 
         DialogResult = true;
     }

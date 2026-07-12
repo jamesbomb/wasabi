@@ -20,6 +20,20 @@ WASABI permette di costruire schemi a blocchi per redirigere l'audio: cattura se
 4. Collega ogni uscita dello splitter a un blocco **Uscita** (cuffie / altoparlanti)
 5. Clic **▶ Avvia routing**
 
+## Calibrazione automatica delle uscite
+
+Due periferiche diverse, per esempio cuffie USB e monitor HDMI, possono avere latenze hardware differenti.
+
+1. Configura almeno due blocchi **Uscita** e ferma il routing.
+2. Clicca **Calibra latenza…** e scegli un microfono che possa sentire entrambi gli output.
+3. Avvia il test: WASABI emette tre brevi chirp, separatamente su ogni uscita.
+4. Controlla i valori proposti e clicca **Applica ritardi**.
+5. Riavvia il routing.
+
+La calibrazione usa cross-correlazione FFT/GCC-PHAT per confrontare l'arrivo del segnale al microfono e ritarda l'uscita più veloce. La compensazione manuale in ⚙ su ciascuna uscita rimane disponibile per le rifiniture.
+
+Un microfono esterno vicino al punto d'ascolto è più affidabile. Se il test indica un segnale debole, alza il volume e ripeti in un ambiente silenzioso.
+
 ## Requisiti
 
 - Windows 10 (2004+) o Windows 11

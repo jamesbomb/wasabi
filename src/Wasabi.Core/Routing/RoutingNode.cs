@@ -17,6 +17,8 @@ public sealed class RoutingNode
     // DeviceLoopback / DeviceOutput
     public string? DeviceId { get; set; }
     public string? DeviceName { get; set; }
+    // Extra delay applied only to this physical output. Default keeps legacy behavior.
+    public int OutputDelayMs { get; set; }
 
     // Mixer / Splitter
     public int InputCount { get; set; } = 2;

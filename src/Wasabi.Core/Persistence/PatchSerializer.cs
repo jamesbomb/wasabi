@@ -24,6 +24,8 @@ public static class PatchSerializer
         JsonSerializer.Serialize(new PatchDto
         {
             Name = graph.Name,
+            CalibrationMicDeviceId = graph.CalibrationMicDeviceId,
+            CalibrationMicDeviceName = graph.CalibrationMicDeviceName,
             Nodes = graph.Nodes.Select(n => new NodeDto
             {
                 Id = n.Id,
@@ -37,6 +39,7 @@ public static class PatchSerializer
                 ProcessName = n.ProcessName,
                 DeviceId = n.DeviceId,
                 DeviceName = n.DeviceName,
+                OutputDelayMs = n.OutputDelayMs,
                 InputCount = n.InputCount,
                 OutputCount = n.OutputCount
             }).ToList(),
@@ -53,7 +56,12 @@ public static class PatchSerializer
         var dto = JsonSerializer.Deserialize<PatchDto>(json, Options)
                   ?? throw new InvalidOperationException("Patch non valido.");
 
-        var graph = new RoutingGraph { Name = dto.Name };
+        var graph = new RoutingGraph
+        {
+            Name = dto.Name,
+            CalibrationMicDeviceId = dto.CalibrationMicDeviceId,
+            CalibrationMicDeviceName = dto.CalibrationMicDeviceName
+        };
         foreach (var nodeDto in dto.Nodes)
         {
             var node = new RoutingNode
@@ -69,6 +77,7 @@ public static class PatchSerializer
                 ProcessName = nodeDto.ProcessName,
                 DeviceId = nodeDto.DeviceId,
                 DeviceName = nodeDto.DeviceName,
+                OutputDelayMs = nodeDto.OutputDelayMs,
                 InputCount = nodeDto.InputCount,
                 OutputCount = nodeDto.OutputCount
             };
@@ -92,6 +101,8 @@ public static class PatchSerializer
     private sealed class PatchDto
     {
         public string Name { get; set; } = "Patch";
+        public string? CalibrationMicDeviceId { get; set; }
+        public string? CalibrationMicDeviceName { get; set; }
         public List<NodeDto> Nodes { get; set; } = [];
         public List<ConnectionDto> Connections { get; set; } = [];
     }
@@ -109,6 +120,7 @@ public static class PatchSerializer
         public string? ProcessName { get; set; }
         public string? DeviceId { get; set; }
         public string? DeviceName { get; set; }
+        public int OutputDelayMs { get; set; }
         public int InputCount { get; set; } = 2;
         public int OutputCount { get; set; } = 2;
     }

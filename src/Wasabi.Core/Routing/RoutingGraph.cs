@@ -3,6 +3,8 @@ namespace Wasabi.Core.Routing;
 public sealed class RoutingGraph
 {
     public string Name { get; set; } = "Patch";
+    public string? CalibrationMicDeviceId { get; set; }
+    public string? CalibrationMicDeviceName { get; set; }
     public List<RoutingNode> Nodes { get; } = [];
     public List<Connection> Connections { get; } = [];
 

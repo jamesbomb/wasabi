@@ -38,6 +38,7 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button Content="Apri patch…" Click="OpenPatch_Click" Margin="4,0"/>
                     <Button Content="Salva patch…" Click="SavePatch_Click" Margin="4,0"/>
+                    <Button Content="Calibra latenza…" Click="CalibrateLatency_Click" Margin="4,0"/>
                     <Button x:Name="StartButton" Content="▶ Avvia routing" Style="{StaticResource AccentButton}" Click="StartRouting_Click" Margin="8,0,4,0"/>
                     <Button x:Name="StopButton" Content="■ Stop" Click="StopRouting_Click" IsEnabled="False" Margin="4,0"/>
                 </StackPanel>
