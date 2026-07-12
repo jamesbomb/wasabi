@@ -1,0 +1,15 @@
+## Build
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+## IDE
+.idea/
+
+## OS
+Thumbs.db
+
+## Logs
+build.log
