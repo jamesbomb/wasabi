@@ -13,6 +13,13 @@ public static class PatchSerializer
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
+    static PatchSerializer()
+    {
+        // Patch files are intended to stay human-readable and the included
+        // examples store node types such as "AppSource" as strings.
+        Options.Converters.Add(new JsonStringEnumConverter());
+    }
+
     public static string Serialize(RoutingGraph graph) =>
         JsonSerializer.Serialize(new PatchDto
         {

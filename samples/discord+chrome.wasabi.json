@@ -1,0 +1,106 @@
+{
+  "name": "Nuovo patch",
+  "nodes": [
+    {
+      "id": "90bde50f1d044977b308fb8d6adc7cf2",
+      "type": 0,
+      "title": "App",
+      "x": 18,
+      "y": 34,
+      "volume": 1,
+      "muted": false,
+      "processId": 42988,
+      "processName": "chrome \u2014 (313) Rally Driver Plays Assetto Corsa Rally - YouTube - Google Chrome",
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "62badccd8f904c0d8e7e4a5c4425eb29",
+      "type": 0,
+      "title": "App",
+      "x": 14,
+      "y": 154.00000000000003,
+      "volume": 1,
+      "muted": false,
+      "processId": 22268,
+      "processName": "Discord \u2014 #generale | obbedienza - Discord",
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "08350748332244f9811f4ec822042ef5",
+      "type": 2,
+      "title": "Mixer",
+      "x": 404,
+      "y": 177,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 4,
+      "outputCount": 2
+    },
+    {
+      "id": "ce3dd7482cff4bcd86635b071fefd997",
+      "type": 3,
+      "title": "Splitter",
+      "x": 627,
+      "y": 196.99999999999997,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "d74b9c9ce7314ef8a896f0d7ceec1c0a",
+      "type": 5,
+      "title": "Uscita",
+      "x": 919,
+      "y": 59.99999999999997,
+      "volume": 1,
+      "muted": false,
+      "deviceId": "{0.0.0.00000000}.{16159de4-d6a2-44e6-9750-28421328b8fc}",
+      "deviceName": "LG HDR WFHD (NVIDIA High Definition Audio)",
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "4731038244814bc0a20b83606cbea9cd",
+      "type": 5,
+      "title": "Uscita",
+      "x": 804,
+      "y": 444,
+      "volume": 0.43540668,
+      "muted": false,
+      "deviceId": "{0.0.0.00000000}.{38c90fd9-987d-4a74-9b29-212a321d865e}",
+      "deviceName": "Auricolare e microtelefono (CORSAIR VOID ELITE Wireless Gaming Headset)",
+      "inputCount": 2,
+      "outputCount": 2
+    }
+  ],
+  "connections": [
+    {
+      "id": "76edfc9747ab48969065b8d33ff8014b",
+      "sourcePortId": "90bde50f1d044977b308fb8d6adc7cf2:out",
+      "targetPortId": "08350748332244f9811f4ec822042ef5:in0"
+    },
+    {
+      "id": "d8092a2b55d645c4a9c95ac964e93ead",
+      "sourcePortId": "62badccd8f904c0d8e7e4a5c4425eb29:out",
+      "targetPortId": "08350748332244f9811f4ec822042ef5:in1"
+    },
+    {
+      "id": "6b34f8f181794815914a7d6ed48df420",
+      "sourcePortId": "08350748332244f9811f4ec822042ef5:out",
+      "targetPortId": "ce3dd7482cff4bcd86635b071fefd997:in"
+    },
+    {
+      "id": "843a47fba9da4e9996317680a8c8a83e",
+      "sourcePortId": "ce3dd7482cff4bcd86635b071fefd997:out0",
+      "targetPortId": "d74b9c9ce7314ef8a896f0d7ceec1c0a:in"
+    },
+    {
+      "id": "017613741ed044a8bebe14a6567513fe",
+      "sourcePortId": "ce3dd7482cff4bcd86635b071fefd997:out1",
+      "targetPortId": "4731038244814bc0a20b83606cbea9cd:in"
+    }
+  ]
+}

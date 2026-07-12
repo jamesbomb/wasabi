@@ -1,0 +1,78 @@
+{
+  "name": "Gioco + Discord su cuffie e altoparlanti",
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "AppSource",
+      "title": "Gioco",
+      "x": 80,
+      "y": 100,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "n2",
+      "type": "AppSource",
+      "title": "Discord",
+      "x": 80,
+      "y": 280,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "n3",
+      "type": "Mixer",
+      "title": "Mix voce + gioco",
+      "x": 340,
+      "y": 180,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 4,
+      "outputCount": 2
+    },
+    {
+      "id": "n4",
+      "type": "Splitter",
+      "title": "Duplica su 2 uscite",
+      "x": 560,
+      "y": 180,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "n5",
+      "type": "DeviceOutput",
+      "title": "Cuffie",
+      "x": 820,
+      "y": 100,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    },
+    {
+      "id": "n6",
+      "type": "DeviceOutput",
+      "title": "Altoparlanti",
+      "x": 820,
+      "y": 280,
+      "volume": 1,
+      "muted": false,
+      "inputCount": 2,
+      "outputCount": 2
+    }
+  ],
+  "connections": [
+    { "id": "c1", "sourcePortId": "n1:out", "targetPortId": "n3:in0" },
+    { "id": "c2", "sourcePortId": "n2:out", "targetPortId": "n3:in1" },
+    { "id": "c3", "sourcePortId": "n3:out", "targetPortId": "n4:in" },
+    { "id": "c4", "sourcePortId": "n4:out0", "targetPortId": "n5:in" },
+    { "id": "c5", "sourcePortId": "n4:out1", "targetPortId": "n6:in" }
+  ]
+}

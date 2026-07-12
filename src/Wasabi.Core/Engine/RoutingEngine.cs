@@ -1,5 +1,6 @@
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using System.Diagnostics;
 using Wasabi.Core.Audio;
 using Wasabi.Core.Diagnostics;
 using Wasabi.Core.Routing;
@@ -17,8 +18,9 @@ public sealed class RoutingEngine : IDisposable
     private volatile bool _running;
     private readonly object _sync = new();
 
-    private const int RingCapacity = 44100 * 2; // ~0.5 sec stereo
-    private const int MixFrameCount = 512;
+    private const int RingCapacity = AudioFormatHelper.SampleRate; // ~0.5 sec stereo
+    private const int MixFrameCount = AudioFormatHelper.SampleRate / 100; // 10 ms
+    private const int MixSampleCount = MixFrameCount * AudioFormatHelper.Channels;
 
     public bool IsRunning => _running;
     public event EventHandler<string>? StatusChanged;
@@ -167,7 +169,9 @@ public sealed class RoutingEngine : IDisposable
                 var device = enumerator.GetDevice(node.DeviceId);
                 var provider = new BufferedWaveProvider(AudioFormatHelper.StandardFormat)
                 {
-                    BufferDuration = TimeSpan.FromSeconds(2),
+                    // Large buffers turn small clock differences between endpoints into
+                    // seconds of delay. Keep a bounded low-latency queue instead.
+                    BufferDuration = TimeSpan.FromMilliseconds(250),
                     DiscardOnBufferOverflow = true
                 };
                 var output = new WasapiOut(device, AudioClientShareMode.Shared, false, 50);
@@ -187,8 +191,11 @@ public sealed class RoutingEngine : IDisposable
 
     private void MixLoop()
     {
-        var scratch = new float[MixFrameCount * AudioFormatHelper.Channels];
+        var scratch = new float[MixSampleCount];
         var nodeInputs = new Dictionary<string, float[]>();
+        var clock = Stopwatch.StartNew();
+        var nextTick = TimeSpan.Zero;
+        var blockDuration = TimeSpan.FromSeconds((double)MixFrameCount / AudioFormatHelper.SampleRate);
 
         while (_running)
         {
@@ -240,7 +247,15 @@ public sealed class RoutingEngine : IDisposable
                 ErrorOccurred?.Invoke(this, ex);
             }
 
-            Thread.Sleep(5);
+            // Feed exactly the number of samples represented by each audio block.
+            // The previous fixed 5 ms sleep sent 16% too many samples at 44.1 kHz,
+            // filling endpoint queues and causing delay/distortion.
+            nextTick += blockDuration;
+            var remaining = nextTick - clock.Elapsed;
+            if (remaining > TimeSpan.FromMilliseconds(1))
+                Thread.Sleep((int)remaining.TotalMilliseconds);
+            else if (remaining < -blockDuration)
+                nextTick = clock.Elapsed;
         }
     }
 
@@ -282,6 +297,7 @@ public sealed class RoutingEngine : IDisposable
         if (!nodeInputs.TryGetValue(node.Id, out var input)) return;
         if (node.Muted) return;
 
+        AudioFormatHelper.SoftClip(input);
         AudioFormatHelper.ApplyGain(input, node.Volume);
         var bytes = AudioFormatHelper.FloatToBytes(input);
         provider.AddSamples(bytes, 0, bytes.Length);

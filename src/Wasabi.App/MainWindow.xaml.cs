@@ -133,15 +133,27 @@ public partial class MainWindow : Window
         };
         if (dlg.ShowDialog() != true) return;
 
-        StopRouting_Click(sender, e);
-        var loaded = PatchSerializer.Deserialize(File.ReadAllText(dlg.FileName));
-        _graph.Nodes.Clear();
-        _graph.Connections.Clear();
-        _graph.Name = loaded.Name;
-        foreach (var node in loaded.Nodes) _graph.Nodes.Add(node);
-        foreach (var conn in loaded.Connections) _graph.Connections.Add(conn);
-        Editor.Refresh();
-        UpdateStatus();
+        try
+        {
+            StopRouting_Click(sender, e);
+            var loaded = PatchSerializer.Deserialize(File.ReadAllText(dlg.FileName));
+            _graph.Nodes.Clear();
+            _graph.Connections.Clear();
+            _graph.Name = loaded.Name;
+            foreach (var node in loaded.Nodes) _graph.Nodes.Add(node);
+            foreach (var conn in loaded.Connections) _graph.Connections.Add(conn);
+            Editor.Refresh();
+            UpdateStatus();
+        }
+        catch (Exception ex)
+        {
+            WasabiLog.Error($"Impossibile aprire il patch '{dlg.FileName}'.", ex);
+            MessageBox.Show(
+                $"Patch non valido o non compatibile:{Environment.NewLine}{ex.Message}",
+                "Impossibile aprire patch",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 
     protected override void OnClosed(EventArgs e)
