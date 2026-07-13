@@ -14,6 +14,8 @@ WASABI permette di costruire schemi a blocchi per redirigere l'audio: cattura se
 [Discord] ┘                           └── [Altoparlanti]
 ```
 
+![Schema a blocchi WASABI: gioco e Discord su cuffie e altoparlanti](docs/images/wasabi-routing-example.png)
+
 1. Aggiungi blocchi **App** per gioco e Discord, configurandoli con ⚙
 2. Collega entrambi a un **Mixer**
 3. Collega il mixer a un **Splitter**
