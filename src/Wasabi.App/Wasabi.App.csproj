@@ -9,6 +9,7 @@
     <AssemblyName>WASABI</AssemblyName>
     <Product>WASABI</Product>
     <Description>Router audio a blocchi per Windows</Description>
+    <ApplicationIcon>Assets\wasabi.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wasabi.Core\Wasabi.Core.csproj" />
