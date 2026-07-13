@@ -9,7 +9,7 @@ WASABI lets you build block-based audio routing graphs: selectively capture appl
 > Play **game + Discord** through both **headphones** and **speakers** at the same time.
 
 ```
-[Game]  ──┐
+[Game] ───┐
           ├── [Mixer] ── [Splitter] ──┬── [Headphones]
 [Discord] ┘                           └── [Speakers]
 ```
