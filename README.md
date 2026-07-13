@@ -9,18 +9,20 @@ WASABI lets you build block-based audio routing graphs: selectively capture appl
 > Play **game + Discord** through both **headphones** and **speakers** at the same time.
 
 ```
-[Game] ──┐
-         ├── [Mixer] ── [Splitter] ──┬── [Headphones]
-[Discord] ┘                          └── [Speakers]
+[Game]  ──┐
+          ├── [Mixer] ── [Splitter] ──┬── [Headphones]
+[Discord] ┘                           └── [Speakers]
 ```
 
-![WASABI block graph: game and Discord on headphones and speakers](docs/images/wasabi-routing-example.png)
+WASABI block graph: game and Discord on headphones and speakers
 
 1. Add **App** blocks for the game and Discord, then configure them with ⚙.
 2. Connect both to a **Mixer**.
 3. Connect the mixer to a **Splitter**.
 4. Connect each splitter output to an **Output** block (headphones / speakers).
 5. Click **▶ Start routing**.
+
+
 
 ## Automatic output calibration
 
@@ -43,6 +45,8 @@ An external microphone near the listening position is more reliable. If the test
 
 > Per-app capture uses the Windows **Process Loopback** API, available from Windows 10 version 2004.
 
+
+
 ## Build and run
 
 ```powershell
@@ -52,22 +56,30 @@ dotnet build Wasabi.sln -c Release
 dotnet run --project src\Wasabi.App\Wasabi.App.csproj -c Release
 ```
 
+
+
 ## Available blocks
 
-| Block | Description |
-|--------|-------------|
-| **App** | Captures audio from a specific application (game, Discord, browser…) |
-| **Device (loopback)** | Captures all audio playing through a device |
-| **Mixer** | Mixes multiple sources into one signal |
-| **Splitter** | Duplicates one signal to multiple outputs |
-| **Virtual bus** | Internal signal-routing point in the graph |
-| **Output** | Sends audio to a physical device (headphones, HDMI, AUX…) |
+
+| Block                 | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| **App**               | Captures audio from a specific application (game, Discord, browser…) |
+| **Device (loopback)** | Captures all audio playing through a device                          |
+| **Mixer**             | Mixes multiple sources into one signal                               |
+| **Splitter**          | Duplicates one signal to multiple outputs                            |
+| **Virtual bus**       | Internal signal-routing point in the graph                           |
+| **Output**            | Sends audio to a physical device (headphones, HDMI, AUX…)            |
+
+
+
 
 ## Connections
 
 1. Click an orange **OUT** port.
 2. Click a blue **IN** port on the target block.
 3. Drag blocks to rearrange the graph.
+
+
 
 ## Patches
 
@@ -82,11 +94,15 @@ Windows cannot create true virtual audio devices from user mode without a signed
 - **Virtual bus**: an internal graph node for organizing signals.
 - **External virtual cables** (VB-Cable, VoiceMeeter…): detected as regular devices by Loopback and Output blocks.
 
+
+
 ## Notes
 
 - Configure applications and devices with ⚙ on each block before starting.
 - The editor is locked while routing is active; press **Stop** to edit.
 - If an application produces no audio, its capture remains silent, as expected with WASAPI.
+
+
 
 ## License
 
