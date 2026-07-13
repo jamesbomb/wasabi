@@ -1,49 +1,49 @@
 # WASABI
 
-**W**indows **A**udio **S**chema **B**lock **I**nterface — router audio visuale per Windows.
+**W**indows **A**udio **S**chema **B**lock **I**nterface — a visual audio router for Windows.
 
-WASABI permette di costruire schemi a blocchi per redirigere l'audio: cattura selettiva da applicazioni, mix, split e invio verso più uscite (cuffie, altoparlanti del monitor, AUX, ecc.).
+WASABI lets you build block-based audio routing graphs: selectively capture application audio, mix it, split it, and send it to multiple outputs such as headphones, monitor speakers, and AUX devices.
 
-## Caso d'uso tipico
+## Typical use case
 
-> Far uscire **gioco + Discord** contemporaneamente da **cuffie** e **altoparlanti**.
+> Play **game + Discord** through both **headphones** and **speakers** at the same time.
 
 ```
-[Gioco] ──┐
-          ├── [Mixer] ── [Splitter] ──┬── [Cuffie]
-[Discord] ┘                           └── [Altoparlanti]
+[Game] ──┐
+         ├── [Mixer] ── [Splitter] ──┬── [Headphones]
+[Discord] ┘                          └── [Speakers]
 ```
 
-![Schema a blocchi WASABI: gioco e Discord su cuffie e altoparlanti](docs/images/wasabi-routing-example.png)
+![WASABI block graph: game and Discord on headphones and speakers](docs/images/wasabi-routing-example.png)
 
-1. Aggiungi blocchi **App** per gioco e Discord, configurandoli con ⚙
-2. Collega entrambi a un **Mixer**
-3. Collega il mixer a un **Splitter**
-4. Collega ogni uscita dello splitter a un blocco **Uscita** (cuffie / altoparlanti)
-5. Clic **▶ Avvia routing**
+1. Add **App** blocks for the game and Discord, then configure them with ⚙.
+2. Connect both to a **Mixer**.
+3. Connect the mixer to a **Splitter**.
+4. Connect each splitter output to an **Output** block (headphones / speakers).
+5. Click **▶ Start routing**.
 
-## Calibrazione automatica delle uscite
+## Automatic output calibration
 
-Due periferiche diverse, per esempio cuffie USB e monitor HDMI, possono avere latenze hardware differenti.
+Two different devices, such as USB headphones and an HDMI monitor, can have different hardware latencies.
 
-1. Configura almeno due blocchi **Uscita** e ferma il routing.
-2. Clicca **Calibra latenza…** e scegli un microfono che possa sentire entrambi gli output.
-3. Avvia il test: WASABI emette tre brevi chirp, separatamente su ogni uscita.
-4. Controlla i valori proposti e clicca **Applica ritardi**.
-5. Riavvia il routing.
+1. Configure at least two **Output** blocks and stop routing.
+2. Click **Calibrate latency…** and choose a microphone that can hear both outputs.
+3. Start the test: WASABI plays three short chirps separately through each output.
+4. Review the suggested values and click **Apply delays**.
+5. Restart routing.
 
-La calibrazione usa cross-correlazione FFT/GCC-PHAT per confrontare l'arrivo del segnale al microfono e ritarda l'uscita più veloce. La compensazione manuale in ⚙ su ciascuna uscita rimane disponibile per le rifiniture.
+Calibration uses FFT/GCC-PHAT cross-correlation to compare the signal arrival time at the microphone and delay the faster output. Manual per-output compensation in ⚙ remains available for fine-tuning.
 
-Un microfono esterno vicino al punto d'ascolto è più affidabile. Se il test indica un segnale debole, alza il volume e ripeti in un ambiente silenzioso.
+An external microphone near the listening position is more reliable. If the test reports a weak signal, increase the volume and repeat it in a quiet environment.
 
-## Requisiti
+## Requirements
 
-- Windows 10 (2004+) o Windows 11
+- Windows 10 (2004+) or Windows 11
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 
-> La cattura per-app usa l'API **Process Loopback** di Windows (disponibile da Windows 10 2004).
+> Per-app capture uses the Windows **Process Loopback** API, available from Windows 10 version 2004.
 
-## Build e avvio
+## Build and run
 
 ```powershell
 cd c:\Users\angry\Projects\audiohandler
@@ -52,42 +52,42 @@ dotnet build Wasabi.sln -c Release
 dotnet run --project src\Wasabi.App\Wasabi.App.csproj -c Release
 ```
 
-## Blocchi disponibili
+## Available blocks
 
-| Blocco | Descrizione |
+| Block | Description |
 |--------|-------------|
-| **App** | Cattura l'audio di un'applicazione specifica (gioco, Discord, browser…) |
-| **Dispositivo (loopback)** | Cattura tutto l'audio che esce da un dispositivo |
-| **Mixer** | Somma più sorgenti in un unico segnale |
-| **Splitter** | Duplica un segnale su più uscite |
-| **Bus virtuale** | Punto di passaggio interno nel grafo |
-| **Uscita** | Invia l'audio a un dispositivo fisico (cuffie, HDMI, AUX…) |
+| **App** | Captures audio from a specific application (game, Discord, browser…) |
+| **Device (loopback)** | Captures all audio playing through a device |
+| **Mixer** | Mixes multiple sources into one signal |
+| **Splitter** | Duplicates one signal to multiple outputs |
+| **Virtual bus** | Internal signal-routing point in the graph |
+| **Output** | Sends audio to a physical device (headphones, HDMI, AUX…) |
 
-## Collegamenti
+## Connections
 
-1. Clic su una porta **OUT** (arancione)
-2. Clic su una porta **IN** (blu) del blocco destinazione
-3. Trascina i blocchi per riorganizzare lo schema
+1. Click an orange **OUT** port.
+2. Click a blue **IN** port on the target block.
+3. Drag blocks to rearrange the graph.
 
-## Patch
+## Patches
 
-Salva e ricarica le configurazioni in formato `.wasabi.json`.  
-Un esempio è in `samples/game-discord-dual-output.wasabi.json`.
+Save and reload configurations in the `.wasabi.json` format.  
+An example is available at `samples/game-discord-dual-output.wasabi.json`.
 
-## Periferiche virtuali
+## Virtual devices
 
-Windows non permette di creare vere periferiche audio virtuali da user-mode senza un driver kernel firmato. WASABI risolve il caso d'uso in modo diverso:
+Windows cannot create true virtual audio devices from user mode without a signed kernel driver. WASABI addresses the use case differently:
 
-- **Routing diretto**: cattura per-app e invia a più uscite fisiche senza cavo virtuale
-- **Bus virtuale**: nodo interno al grafo per organizzare il segnale
-- **Cavi virtuali esterni** (VB-Cable, VoiceMeeter…): rilevati come dispositivi normali nei blocchi Loopback/Uscita
+- **Direct routing**: capture per-app audio and send it to multiple physical outputs without a virtual cable.
+- **Virtual bus**: an internal graph node for organizing signals.
+- **External virtual cables** (VB-Cable, VoiceMeeter…): detected as regular devices by Loopback and Output blocks.
 
-## Note
+## Notes
 
-- Configura app e dispositivi con ⚙ su ogni blocco prima di avviare
-- Durante il routing l'editor è bloccato; premi **Stop** per modificare
-- Se un'app non produce audio, la cattura resta silenziosa (comportamento WASAPI)
+- Configure applications and devices with ⚙ on each block before starting.
+- The editor is locked while routing is active; press **Stop** to edit.
+- If an application produces no audio, its capture remains silent, as expected with WASAPI.
 
-## Licenza
+## License
 
 MIT
